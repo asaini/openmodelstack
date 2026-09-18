@@ -11,6 +11,21 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 | Agent CLI | Codex | Terminal-based coding assistant |
 | Inference | OpenRouter / Fireworks / OpenAI | Model providers |
 
+## Architecture
+
+```mermaid
+graph LR
+    User["🧑 User"] -->|browser| OpenWebUI
+    User -->|terminal| Codex
+
+    OpenWebUI -->|OpenAI-compatible API| LiteLLM
+    Codex -->|OpenAI-compatible API| LiteLLM
+
+    LiteLLM -->|routes to| OpenAI["OpenAI"]
+    LiteLLM -->|routes to| Fireworks["Fireworks"]
+    LiteLLM -->|routes to| OpenRouter["OpenRouter"]
+```
+
 ## Quick start
 
 **One-liner:**
