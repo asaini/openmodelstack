@@ -1,0 +1,12 @@
+model_provider = "litellm"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "low"
+
+[model_providers.litellm]
+name = "litellm"
+base_url = "http://localhost:4000/v1"
+env_key = "LITELLM_API_KEY"
+wire_api = "responses"
+stream_idle_timeout_ms = 7200000
+stream_max_retries = 5
+request_max_retries = 4
