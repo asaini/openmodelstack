@@ -13,9 +13,17 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 
 ## Quick start
 
+**One-liner:**
+
 ```bash
-git clone <this-repo>
-cd my-intelligence-stack
+curl -fsSL https://raw.githubusercontent.com/asaini/openmodelstack/main/install.sh | bash
+```
+
+**Or clone and run locally:**
+
+```bash
+git clone https://github.com/asaini/openmodelstack.git
+cd openmodelstack
 ./install.sh
 ```
 

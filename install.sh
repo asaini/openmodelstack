@@ -2,6 +2,22 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_URL="https://github.com/asaini/openmodelstack.git"
+
+# If the compose file isn't in the current directory, we're probably being
+# run standalone (e.g. curl | bash). Clone the repo first.
+if [ ! -f "${SCRIPT_DIR}/docker-compose.yml" ]; then
+  INSTALL_DIR="${HOME}/.openmodelstack"
+  if [ -d "${INSTALL_DIR}" ]; then
+    echo "Existing install found at ${INSTALL_DIR} — pulling latest..."
+    git -C "${INSTALL_DIR}" pull --ff-only
+  else
+    echo "Cloning repo to ${INSTALL_DIR}..."
+    git clone "${REPO_URL}" "${INSTALL_DIR}"
+  fi
+  SCRIPT_DIR="${INSTALL_DIR}"
+fi
+
 ENV_FILE="${SCRIPT_DIR}/.env"
 CODEX_CONFIG_DIR="${HOME}/.codex"
 CODEX_CONFIG_FILE="${CODEX_CONFIG_DIR}/config.toml"
