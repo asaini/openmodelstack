@@ -4,12 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_URL="https://github.com/asaini/openmodelstack.git"
 
-# When piped (curl | bash), stdin is consumed by the script itself — remap
-# it to the terminal so interactive prompts and piped installers work.
-if [ ! -t 0 ] && [ -e /dev/tty ]; then
-  exec < /dev/tty
-fi
-
 # If the compose file isn't in the current directory, we're probably being
 # run standalone (e.g. curl | bash). Clone the repo first.
 if [ ! -f "${SCRIPT_DIR}/docker-compose.yml" ]; then
@@ -33,7 +27,7 @@ echo ""
 
 # 1. Check prerequisites
 if ! command -v docker &>/dev/null; then
-  read -r -p "Docker is not installed. Install it now via get.docker.com? [Y/n] " install_docker
+  read -r -p "Docker is not installed. Install it now via get.docker.com? [Y/n] " install_docker < /dev/tty
   if [[ "${install_docker:-Y}" != "n" ]]; then
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sh
@@ -58,7 +52,7 @@ else
   echo "Please edit .env with your API keys before continuing:"
   echo "  ${ENV_FILE}"
   echo ""
-  read -r -p "Press Enter after editing .env (or Ctrl+C to exit now)..."
+  read -r -p "Press Enter after editing .env (or Ctrl+C to exit now)..." < /dev/tty
 fi
 
 # 3. Source .env for key checking
@@ -70,7 +64,7 @@ for var in POSTGRES_PASSWORD LITELLM_MASTER_KEY WEBUI_SECRET_KEY; do
   if [[ "${!var:-}" == replace-with* ]]; then
     echo ""
     echo "Warning: ${var} is still set to the template default."
-    read -r -p "Generate a random value for ${var}? [Y/n] " gen
+    read -r -p "Generate a random value for ${var}? [Y/n] " gen < /dev/tty
     if [[ "${gen:-Y}" != "n" ]]; then
       local_val=$(openssl rand -hex 32)
       sed -i.bak "s|^${var}=.*|${var}=${local_val}|" "${ENV_FILE}"
@@ -84,7 +78,7 @@ for var in FIREWORKS_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY; do
   if [[ "${!var:-}" == *replace-with* ]]; then
     echo ""
     echo "Warning: ${var} is still a placeholder."
-    read -r -p "Enter value for ${var} (or press Enter to skip): " keyval
+    read -r -p "Enter value for ${var} (or press Enter to skip): " keyval < /dev/tty
     if [ -n "${keyval}" ]; then
       sed -i.bak "s|^${var}=.*|${var}=${keyval}|" "${ENV_FILE}"
       rm "${ENV_FILE}.bak"
