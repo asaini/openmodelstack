@@ -4,6 +4,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_URL="https://github.com/asaini/openmodelstack.git"
 
+# When piped (curl | bash), stdin is consumed by the script itself — remap
+# it to the terminal so interactive prompts and piped installers work.
+if [ ! -t 0 ] && [ -e /dev/tty ]; then
+  exec < /dev/tty
+fi
+
 # If the compose file isn't in the current directory, we're probably being
 # run standalone (e.g. curl | bash). Clone the repo first.
 if [ ! -f "${SCRIPT_DIR}/docker-compose.yml" ]; then
@@ -27,8 +33,14 @@ echo ""
 
 # 1. Check prerequisites
 if ! command -v docker &>/dev/null; then
-  echo "Error: Docker is not installed. Install it from https://docs.docker.com/get-docker/"
-  exit 1
+  read -r -p "Docker is not installed. Install it now via get.docker.com? [Y/n] " install_docker
+  if [[ "${install_docker:-Y}" != "n" ]]; then
+    echo "Installing Docker..."
+    curl -fsSL https://get.docker.com | sh
+  else
+    echo "Error: Docker is not installed. Install it from https://docs.docker.com/get-docker/"
+    exit 1
+  fi
 fi
 
 if ! docker compose version &>/dev/null; then
