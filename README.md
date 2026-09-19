@@ -73,6 +73,20 @@ export LITELLM_API_KEY="<your LITELLM_MASTER_KEY from .env>"
 
 Add that to your shell profile. If you already have a Codex config, the installer won't overwrite it — merge the `[model_providers.litellm]` section manually.
 
+Launch Codex with its configured default model:
+
+```bash
+codex
+```
+
+Or select any model exposed by LiteLLM without changing your default:
+
+```bash
+codex -m z-ai/glm-5.3-flash
+```
+
+The value passed to `-m` must match the `model_name` in `config/litellm/config.yaml`. Models are added there; `config/codex/config.toml` only defines the provider connection and your default model.
+
 ## Stopping / restarting
 
 ```bash
