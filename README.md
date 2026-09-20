@@ -18,11 +18,11 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 graph LR
     User["🧑 User"] -->|browser| OpenWebUI
     User -->|terminal| Codex
-    User -->|terminal| Claude Code
+    User -->|terminal| ClaudeCode["Claude Code"]
 
     OpenWebUI -->|OpenAI-compatible API| LiteLLM
     Codex -->|OpenAI-compatible API| LiteLLM
-    Claude Code -->|Anthropic-compatible API| LiteLLM
+    ClaudeCode -->|Anthropic-compatible API| LiteLLM
 
     LiteLLM -->|routes to| OpenAI["OpenAI"]
     LiteLLM -->|routes to| Fireworks["Fireworks"]
