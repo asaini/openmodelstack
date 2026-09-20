@@ -9,6 +9,7 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 | Frontend | OpenWebUI | Web-based chat UI |
 | Gateway | LiteLLM | Routes models across providers, logs spend |
 | Agent CLI | Codex | Terminal-based coding assistant |
+| Agent CLI | Claude Code | Terminal-based coding assistant |
 | Inference | OpenRouter / Fireworks / OpenAI | Model providers |
 
 ## Architecture
@@ -17,9 +18,11 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 graph LR
     User["🧑 User"] -->|browser| OpenWebUI
     User -->|terminal| Codex
+    User -->|terminal| Claude Code
 
     OpenWebUI -->|OpenAI-compatible API| LiteLLM
     Codex -->|OpenAI-compatible API| LiteLLM
+    Claude Code -->|Anthropic-compatible API| LiteLLM
 
     LiteLLM -->|routes to| OpenAI["OpenAI"]
     LiteLLM -->|routes to| Fireworks["Fireworks"]
@@ -46,7 +49,7 @@ The installer will:
 1. Check for Docker
 2. Create `.env` from `.env.example` and prompt for API keys
 3. Generate random internal secrets (Postgres, LiteLLM master key, WebUI secret)
-4. Copy the Codex config to `~/.codex/config.toml` (skips if one already exists)
+4. Copy the Codex and Claude Code configs to `~/.codex/config.toml` and `~/.claude/settings.json` (each skips if one already exists)
 5. Start all services via Docker Compose
 
 After it finishes, open `http://localhost:3000` for the chat UI.
@@ -61,6 +64,7 @@ After it finishes, open `http://localhost:3000` for the chat UI.
 
 - **LiteLLM model routing**: `config/litellm/config.yaml`
 - **Codex model provider**: `config/codex/config.toml`
+- **Claude Code model provider**: `config/claude/settings.json`
 - **Secrets and API keys**: `.env` (not committed to git)
 
 ## For Codex users
@@ -86,6 +90,21 @@ codex -m z-ai/glm-5.3-flash
 ```
 
 The value passed to `-m` must match the `model_name` in `config/litellm/config.yaml`. Models are added there; `config/codex/config.toml` only defines the provider connection and your default model.
+
+## For Claude Code users
+
+The installer copies a sample `settings.json` to `~/.claude/settings.json` that points Claude Code at your local LiteLLM gateway. The sample sets:
+
+- `ANTHROPIC_BASE_URL` → `http://localhost:4000` (LiteLLM serves the Anthropic-compatible `/v1/messages` endpoint)
+- `ANTHROPIC_AUTH_TOKEN` → a placeholder for your `LITELLM_MASTER_KEY` from `.env` — replace it after install:
+
+```bash
+export ANTHROPIC_AUTH_TOKEN="<your LITELLM_MASTER_KEY from .env>"
+```
+
+- `ANTHROPIC_MODEL` / `ANTHROPIC_SMALL_FAST_MODEL` → model names matching `model_name` entries in `config/litellm/config.yaml` (defaults: `gpt-5.6-luna` and `glm-5p3-flash`).
+
+If you already have a Claude Code config, the installer won't overwrite it — merge the `env` section from `config/claude/settings.json` manually. To change models, update the names in that file; no gateway change is needed since LiteLLM serves any routed model.
 
 ## Stopping / restarting
 

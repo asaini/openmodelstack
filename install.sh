@@ -21,6 +21,8 @@ fi
 ENV_FILE="${SCRIPT_DIR}/.env"
 CODEX_CONFIG_DIR="${HOME}/.codex"
 CODEX_CONFIG_FILE="${CODEX_CONFIG_DIR}/config.toml"
+CLAUDE_CONFIG_DIR="${HOME}/.claude"
+CLAUDE_CONFIG_FILE="${CLAUDE_CONFIG_DIR}/settings.json"
 
 echo "=== Intelligence Stack Installer ==="
 echo ""
@@ -104,6 +106,18 @@ else
   echo "Installed Codex config to ${CODEX_CONFIG_FILE}."
 fi
 
+# Install Claude Code config (non-destructive: only write if not present)
+echo ""
+if [ -f "${CLAUDE_CONFIG_FILE}" ]; then
+  echo "Claude Code config already exists at ${CLAUDE_CONFIG_FILE} — not overwriting."
+  echo "If you want to use this stack's Claude Code config, merge the env settings"
+  echo "from ${SCRIPT_DIR}/config/claude/settings.json manually."
+else
+  mkdir -p "${CLAUDE_CONFIG_DIR}"
+  cp "${SCRIPT_DIR}/config/claude/settings.json" "${CLAUDE_CONFIG_FILE}"
+  echo "Installed Claude Code config to ${CLAUDE_CONFIG_FILE}."
+fi
+
 echo ""
 echo "Set LITELLM_API_KEY in your shell profile (e.g. ~/.zshrc):"
 echo "  export LITELLM_API_KEY=\"\${LITELLM_MASTER_KEY}\""
@@ -121,4 +135,4 @@ echo "  LiteLLM API: http://localhost:4000/v1"
 echo "  LiteLLM UI:  http://localhost:4000/ui"
 echo ""
 echo "LiteLLM master key is in .env (LITELLM_MASTER_KEY)."
-echo "Use it as the API key for OpenWebUI and Codex."
+echo "Use it as the API key for OpenWebUI, Codex, and Claude Code."

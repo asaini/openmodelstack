@@ -10,6 +10,7 @@
 | `docker-compose.yml` | Service definitions, ports, mounted config files, and environment variables passed to services. | You add a service, change ports/volumes, or expose a new `.env` key to LiteLLM or OpenWebUI. |
 | `config/litellm/config.yaml` | LiteLLM's model list and general gateway behavior. This is the source for models exposed through `http://localhost:4000/v1`. | You add, remove, rename, or reroute a model, or change LiteLLM logging/model storage settings. Restart LiteLLM after edits. |
 | `config/codex/config.toml` | The committed, minimal Codex CLI configuration: its selected model/provider and connection to LiteLLM. | You change Codex defaults or LiteLLM connection settings. It is copied to `~/.codex/config.toml` only during first-time install; the installer never overwrites an existing user config. |
+| `config/claude/settings.json` | The committed, minimal Claude Code configuration: connection to LiteLLM via `ANTHROPIC_BASE_URL`/`ANTHROPIC_AUTH_TOKEN`, plus default and lightweight model selection. | You change Claude Code defaults or LiteLLM connection settings. It is copied to `~/.claude/settings.json` only during first-time install; the installer never overwrites an existing user config. JSON does not support comments — document key points in this file's docs or in README.md instead. |
 | `.gitignore` | Repository-level ignored paths, notably `.env`. | You introduce another generated/local artifact that should not be committed. |
 | `install.sh` | First-run setup and stack startup. It creates `.env`, validates keys, installs the Codex config non-destructively, and starts Docker Compose. | You add setup, validation, or startup behavior that affects users during installation. |
 | `README.md` | User-facing quick start, architecture, URLs, and high-level configuration summary. | User-visible setup, service names, ports, or configuration workflows change. Keep implementation details in this file or inline docs. |
@@ -53,6 +54,8 @@ curl -sS http://localhost:4000/v1/models \
 ```
 
 When adding a model as a Codex default, update `model` in `config/codex/config.toml` using the same `model_name` from the LiteLLM config. OpenWebUI discovers LiteLLM's model list, so no separate model declaration is required there.
+
+The same applies to Claude Code: update `ANTHROPIC_MODEL` (and `ANTHROPIC_SMALL_FAST_MODEL` for the lightweight/background model) in `config/claude/settings.json` using the same `model_name` from the LiteLLM config. LiteLLM serves the Anthropic-compatible `/v1/messages` endpoint for any routed model, so no separate declaration is needed.
 
 To launch Codex with a configured LiteLLM model without changing the default, pass the exact `model_name` from `config/litellm/config.yaml`:
 
