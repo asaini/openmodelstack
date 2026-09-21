@@ -11,6 +11,7 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 | Agent CLI | Codex | Terminal-based coding assistant |
 | Agent CLI | Claude Code | Terminal-based coding assistant |
 | Inference | OpenRouter / Fireworks / OpenAI | Model providers |
+| Storage | Postgres | Chat history and LiteLLM database |
 
 ## Architecture
 
