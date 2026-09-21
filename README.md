@@ -27,6 +27,8 @@ graph LR
     LiteLLM -->|routes to| OpenAI["OpenAI"]
     LiteLLM -->|routes to| Fireworks["Fireworks"]
     LiteLLM -->|routes to| OpenRouter["OpenRouter"]
+
+    LiteLLM -->|stores chat history| Postgres["Postgres"]
 ```
 
 ## Quick start
