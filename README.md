@@ -1,4 +1,4 @@
-# My Intelligence Stack
+# Open Source Intelligence Stack
 
 A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (chat frontend), and Codex (agent CLI), backed by OpenRouter, Fireworks, and OpenAI.
 
@@ -11,6 +11,7 @@ A portable, Docker-based AI stack combining LiteLLM (model gateway), OpenWebUI (
 | Agent CLI | Codex | Terminal-based coding assistant |
 | Agent CLI | Claude Code | Terminal-based coding assistant |
 | Inference | OpenRouter / Fireworks / OpenAI | Model providers |
+| Search | [Firecrawl](https://www.firecrawl.dev/) | Web search for OpenWebUI |
 | Storage | Postgres | Chat history and LiteLLM database |
 
 ## Architecture
@@ -68,6 +69,7 @@ After it finishes, open `http://localhost:3000` for the chat UI.
 - **LiteLLM model routing**: `config/litellm/config.yaml`
 - **Codex model provider**: `config/codex/config.toml`
 - **Claude Code model provider**: `config/claude/settings.json`
+- **Firecrawl**: configure OpenWebUI to use Firecrawl for web search using your Firecrawl API key
 - **Secrets and API keys**: `.env` (not committed to git)
 
 ## For Codex users
@@ -116,3 +118,7 @@ docker compose down      # stop services
 docker compose up -d    # restart
 docker compose logs -f  # follow logs
 ```
+
+## License
+
+This project is released under the [Unlicense](LICENSE), dedicating it to the public domain.
